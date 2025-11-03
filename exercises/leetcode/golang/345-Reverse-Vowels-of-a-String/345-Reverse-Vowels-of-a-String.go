@@ -26,9 +26,7 @@ package main
 // s consist of printable ASCII characters.
 
 import (
-	"errors"
 	"fmt"
-	"strings"
 )
 
 func main() {
@@ -36,27 +34,58 @@ func main() {
 	fmt.Println(reverseVowels(s))
 }
 
+// SOLUTION WITH TWO POINTERS
+
 func reverseVowels(s string) string {
-	var sb = new(strings.Builder)
-	var stack = new(Stack)
+	characters := []byte(s)
+	left := 0
+	right := len(s) - 1
 
-	for i := range s {
-		if isVowel(s[i]) {
-			stack.Push(s[i])
+	for left < right {
+		leftChar := s[left]
+		rightChar := s[right]
+
+		if isVowel(leftChar) && isVowel(rightChar) {
+			characters[left], characters[right] = characters[right], characters[left]
+			left++
+			right--
+			continue
+		}
+
+		if !isVowel(leftChar) {
+			left++
+		}
+		if !isVowel(rightChar) {
+			right--
 		}
 	}
 
-	for i := range s {
-		if isVowel(s[i]) {
-			vowel, _ := stack.Pop()
-			sb.WriteByte(vowel)
-		} else {
-			sb.WriteByte(s[i])
-		}
-	}
-
-	return sb.String()
+	return string(characters)
 }
+
+// SOLUTION WITH STACK
+
+// func reverseVowels(s string) string {
+// 	var sb = new(strings.Builder)
+// 	var stack = new(Stack)
+
+// 	for i := range s {
+// 		if isVowel(s[i]) {
+// 			stack.Push(s[i])
+// 		}
+// 	}
+
+// 	for i := range s {
+// 		if isVowel(s[i]) {
+// 			vowel, _ := stack.Pop()
+// 			sb.WriteByte(vowel)
+// 		} else {
+// 			sb.WriteByte(s[i])
+// 		}
+// 	}
+
+// 	return sb.String()
+// }
 
 func isVowel(ch byte) bool {
 	switch ch {
@@ -68,27 +97,27 @@ func isVowel(ch byte) bool {
 	}
 }
 
-type Node struct {
-	value byte
-	next  *Node
-}
+// type Node struct {
+// 	value byte
+// 	next  *Node
+// }
 
-type Stack struct {
-	top *Node
-}
+// type Stack struct {
+// 	top *Node
+// }
 
-func (s *Stack) Push(value byte) {
-	newNode := &Node{value: value}
-	newNode.next = s.top
-	s.top = newNode
-}
+// func (s *Stack) Push(value byte) {
+// 	newNode := &Node{value: value}
+// 	newNode.next = s.top
+// 	s.top = newNode
+// }
 
-func (s *Stack) Pop() (byte, error) {
-	if s.top == nil {
-		return 0, errors.New("stack is empty")
-	}
+// func (s *Stack) Pop() (byte, error) {
+// 	if s.top == nil {
+// 		return 0, errors.New("stack is empty")
+// 	}
 
-	value := s.top.value
-	s.top = s.top.next
-	return value, nil
-}
+// 	value := s.top.value
+// 	s.top = s.top.next
+// 	return value, nil
+// }
